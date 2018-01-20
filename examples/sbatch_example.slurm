@@ -18,6 +18,6 @@ module load openmpi
 #module load python-3.6.2
 #module load python-2.7.11
 module list
-# cd ~/MPIExamples                  # Go to where your code is
+cd <YourFolder>                         # Go to where your code is
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/lib64"
-mpirun python python-mpi-example.py # Would be located in "MPIExamples" as above.
+mpirun python <ModuleName>              # Would be located in <YourFolder> as above.
