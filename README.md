@@ -32,10 +32,12 @@ To find the list of modules YOU have currently load, enter:
 
     module list
 
-## mpi4py 
+## mpi4py and Anaconda
 
-This is a Python module that allows you to communicate with MPI via OpenMPI. At the time of writing, this module is not built into the Python distribution (*I know it's dumb*).  You instead can clone the source from the [mpi4py's official git repository](https://bitbucket.org/mpi4py/mpi4py) via the command:
+This is a Python module that allows you to communicate with MPI via OpenMPI. At the time of writing, this module is not built into Hummingbird' Python distribution (*I know it's dumb*).  To address this, install [Anaconda](https://www.anaconda.com/what-is-anaconda/), and use your own local install.  To do this, run the command:
 
-    git clone https://bitbucket.org/mpi4py/mpi4py
+    .\install_anaconda
 
-You then copy the directory `mpi4py/src/mpi4py` into your project directory.
+You can change the version of Anaconda through the variable `VERSION_NUM` in the file. After an install, you may need to call `source .\bashrc` for your `bash` profile to be updated.
+
+If you are using Anaconda, make sure you slurm file calls `conda`, and not `python`.
