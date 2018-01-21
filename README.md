@@ -40,4 +40,7 @@ This is a Python module that allows you to communicate with MPI via OpenMPI. At 
 
 You can change the version of Anaconda through the variable `VERSION_NUM` in the file. After an install, you may need to call `source .\bashrc` for your `bash` profile to be updated.
 
-If you are using Anaconda, make sure you slurm file calls `conda`, and not `python`.
+If you are using Anaconda, make sure you slurm file references the absolute path to conda's bin file and does not call the standard `python`.  You may also want to have it activate the conda environment using the command:
+
+    source activate <CondaEnvironmentName>
+
