@@ -1,16 +1,24 @@
 #!/bin/bash
 # Go to home directory
 cd ~
-VERSION_NUM=5.0.1
+
+ANACONDA_VERSION=5.0.1
+PYTHON_VERSION=2.7.14
 
 # You can change what anaconda version you want at 
 # https://repo.continuum.io/archive/
-wget https://repo.continuum.io/archive/Anaconda2-$VERSION_NUM-Linux-x86_64.sh
-bash Anaconda2-$VERSION_NUM-Linux-x86_64.sh -b -p ~/anaconda
-rm Anaconda2-$VERSION_NUM-Linux-x86_64.sh
+wget https://repo.continuum.io/archive/Anaconda2-$ANACONDA_VERSION-Linux-x86_64.sh
+bash Anaconda2-$ANACONDA_VERSION-Linux-x86_64.sh -b -p ~/anaconda
+rm Anaconda2-$ANACONDA_VERSION-Linux-x86_64.sh
 echo 'export PATH="~/anaconda/bin:$PATH"' >> ~/.bashrc 
 
 # Refresh basically
 source .bashrc
 
 conda update conda
+
+# Create a python environment
+conda create -n conda-$PYTHON_VERSION python=$PYTHON_VERSION anaconda -y
+# Install mpi4py
+conda install -n conda-$PYTHON_VERSION python=$PYTHON_VERSION mpi4py -y
+source active conda-$PYTHON_VERSION
