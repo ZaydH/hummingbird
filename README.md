@@ -16,7 +16,9 @@ If you are using Hummingbird away from campus, you must be logged into UCSC's VP
 
 ## Slurm 
 
-This is a protocol for running batch jobs.  I have included an example in the "examples" folder. You need to modify the parameters in `<...>` brackets.  Pay special care to select the right partition.  This is done by removing one of the preciding pound signs ("#").
+This is a protocol for running batch jobs.  I have included an example in the "examples" folder. You need to modify the parameters in `<...>` brackets.  Pay special care to select the right partition.  This is done by removing one of the preceding pound signs ("#").
+
+Harvard compiled a set of [useful sbatch commands](https://www.rc.fas.harvard.edu/resources/documentation/convenient-slurm-commands/).  Examples of commands I have used include: `squeue` to check the status of a command, `scancel` to kill a running job, and `scontrol`.
 
 ## Loading Modules
 
@@ -34,7 +36,9 @@ To find the list of modules YOU have currently load, enter:
 
 ## mpi4py and Anaconda
 
-This is a Python module that allows you to communicate with MPI via OpenMPI. At the time of writing, this module is not built into Hummingbird' Python distribution (*I know it's dumb*).  To address this, install [Anaconda](https://www.anaconda.com/what-is-anaconda/), and use your own local install.  To do this, run the command:
+This is a Python module that allows you to communicate with MPI via OpenMPI. `mpi4py` was recently installed on the server.
+
+If you ever need a custom (or want control of the) Python distributions, install install [Anaconda](https://www.anaconda.com/what-is-anaconda/) in your user directory.  To do this, run the command:
 
     .\install_anaconda
 
