@@ -43,6 +43,7 @@ class HummingbirdFramework(object):
     # noinspection PyPep8Naming
     MASTER_RANK = 0
     if rank == MASTER_RANK:
+      logging.info("***************************** New Run Beginning ****************************")
       HummingbirdFramework._run_controller(comm, TaskClass)
     else:
       worker = WorkerClass(comm, rank)
@@ -68,7 +69,7 @@ class HummingbirdFramework(object):
     :param TaskClass: Class that defines the tasks to be sent to the workers.
     :type TaskClass: class
     """
-    logging.info('CONTROLLER: Starting {} workers'.format(comm.Get_size()))
+    logging.info('CONTROLLER: Starting {} workers'.format(comm.Get_size() - 1))
     status = MPI.Status()
     controller = Controller(comm)
     solver = TaskClass()
@@ -84,18 +85,20 @@ class HummingbirdFramework(object):
 
       # If all tasks are done, do not exit until
       if all_messages_sent:
-        if controller.n_workers == len(controller.available_workers):
+        if controller.all_workers_completed():
           logging.info("CONTROLLER: All workers done and processed. Exiting...")
           sys.exit(0)
         time.sleep(1)
         continue
 
       while controller.have_available_workers_p():
-        task = solver.get_next()
-        # Check if all tasks are completed
-        if task is None:
+        try:
+          task = solver.get_next()
+        except StopIteration:
+          # Generator fully consumed
           controller.terminate_everything()
           all_messages_sent = True
+          break
         else:
           worker = controller.get_available_worker()
           logging.info('CONTROLLER: Packing problem: {}'.format(task))
@@ -123,4 +126,3 @@ class HummingbirdFramework(object):
     handler.setFormatter(formatter)
     logging.getLogger().addHandler(handler)
 
-    logging.info("******************************* New Run Beginning ******************************")

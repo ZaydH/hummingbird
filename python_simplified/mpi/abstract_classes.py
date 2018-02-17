@@ -7,10 +7,12 @@ import socket
 from mpi.message import ControllerToWorkerMessage
 
 
-class AbstractWorker(metaclass=abc.ABCMeta):
+class AbstractWorker():
   """
   Abstract class that defines a worker.
   """
+  __metaclass__ = abc.ABCMeta
+
   def __init__(self, comm, rank):
     self.comm = comm
     self.rank = rank
@@ -49,10 +51,11 @@ class AbstractWorker(metaclass=abc.ABCMeta):
     pass
 
 
-class AbstractTask(metaclass=abc.ABCMeta):
+class AbstractTask():
   """
   Abstract class that defines what a task the workers will perform.
   """
+  __metaclass__ = abc.ABCMeta
 
   def __init__(self):
     """
@@ -87,3 +90,4 @@ class AbstractTask(metaclass=abc.ABCMeta):
     :type results: dict
     """
     pass
+

@@ -57,3 +57,4 @@ class ControllerToWorkerMessage(object):
     :return: Task generated.
     """
     return msg[ControllerToWorkerMessage.TASK_KEY]
+

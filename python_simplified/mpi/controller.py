@@ -6,8 +6,8 @@ from mpi.message import ControllerToWorkerMessage
 class Controller(object):
   def __init__(self, comm):
     self.comm = comm
-    self.n_workers = comm.Get_size()
-    self.available_workers = set(range(1, self.n_workers))
+    self.n_workers = comm.Get_size() - 1
+    self.available_workers = set(range(1, self.n_workers + 1))
 
   def have_available_workers_p(self):
     """
@@ -28,8 +28,8 @@ class Controller(object):
     """
     All tasks are completed so the master kills all workers then exits completely.
     """
-    self.terminate_workers(list(range(1, self.n_workers)))
-    logging.info('Controller: Finished Successfully. Waiting on any unfinished workers...')
+    self.terminate_workers(list(range(1, self.n_workers + 1)))
+    logging.info('CONTROLLER: Finished Successfully. Waiting on any unfinished workers...')
 
   def terminate_workers(self, workers_l):
     """
@@ -50,3 +50,11 @@ class Controller(object):
     """
     # available_workers MUST BE NOT EMPTY
     return self.available_workers.pop()
+
+  def all_workers_completed(self):
+    """
+    :return: True if all workers are done processing (i.e., are available)
+    :rtype: bool
+    """
+    return len(self.available_workers) == self.n_workers
+
