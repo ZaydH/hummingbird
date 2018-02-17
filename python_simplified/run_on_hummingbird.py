@@ -74,11 +74,14 @@ class Worker(AbstractWorker):
 
 
 if __name__ == '__main__':
+  # If you want to manage any command line inputs, put it here
+  # ...
+
   # Parameters to manage the Hummingbird framework.  These must be placed before the "run" method.
   # If you do not specify values for these parameters below, then the default values will be used.
   # HummingbirdFramework.log_file = "hb_logs.txt"
   # HummingbirdFramework.log_level = logging.INFO
 
-  # Nothing should be placed after the run.  This will manage between workers and the controller
-  # automatically.
+  # Nothing should be placed after the run.
+  # The run method manages both workers and the controller automatically.
   HummingbirdFramework.run(Task, Worker)

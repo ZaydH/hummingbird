@@ -1,5 +1,7 @@
 import logging
 
+from mpi.message import ControllerToWorkerMessage
+
 
 class Controller(object):
   def __init__(self, comm):
@@ -36,8 +38,8 @@ class Controller(object):
     :param workers_l: Worker identification numbers from 1 to Number of workers.
     :type workers_l: List[int]
     """
+    message = ControllerToWorkerMessage.exit_message()
     for w in workers_l:
-      message = {'should_exit': True, 'problem': None}
       self.comm.isend(message, dest=w)
 
   def get_available_worker(self):

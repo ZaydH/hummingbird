@@ -68,7 +68,7 @@ class HummingbirdFramework(object):
     :param TaskClass: Class that defines the tasks to be sent to the workers.
     :type TaskClass: class
     """
-    logging.info('CONTROLLER: Starting with {} cores!'.format(comm.Get_size()))
+    logging.info('CONTROLLER: Starting {} workers'.format(comm.Get_size()))
     status = MPI.Status()
     controller = Controller(comm)
     solver = TaskClass()
@@ -85,6 +85,7 @@ class HummingbirdFramework(object):
       # If all tasks are done, do not exit until
       if all_messages_sent:
         if controller.n_workers == len(controller.available_workers):
+          logging.info("CONTROLLER: All workers done and processed. Exiting...")
           sys.exit(0)
         time.sleep(1)
         continue

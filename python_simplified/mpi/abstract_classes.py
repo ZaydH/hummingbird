@@ -25,10 +25,10 @@ class AbstractWorker(metaclass=abc.ABCMeta):
       msg = self.comm.recv()
 
       if ControllerToWorkerMessage.extract_should_exit(msg):
-        logging.info('Rank {}: Exiting by request!'.format(self.rank))
+        logging.info('Worker Rank {}: Exiting by request!'.format(self.rank))
         sys.exit(0)
 
-      logging.info('Rank {}({}): Executing task'.format(self.rank, socket.gethostname()))
+      logging.info('Worker Rank {}({}): Executing task'.format(self.rank, socket.gethostname()))
 
       task = ControllerToWorkerMessage.extract_generated_task(msg)
       results = self.execute_task(task)

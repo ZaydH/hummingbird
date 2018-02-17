@@ -29,6 +29,10 @@ class ControllerToWorkerMessage(object):
     return message
 
   @staticmethod
+  def exit_message():
+    return ControllerToWorkerMessage.build(True, "")
+
+  @staticmethod
   def extract_should_exit(msg):
     """
     Extracts whether the worker should terminate.  This is extracted from the message transmitted
