@@ -40,7 +40,7 @@ This is a Python module that allows you to communicate with MPI via OpenMPI. `mp
 
 If you ever need a custom (or want control of the) Python distributions, install install [Anaconda](https://www.anaconda.com/what-is-anaconda/) in your user directory.  To do this, run the command:
 
-    .\install_anaconda
+    ./install_anaconda
 
 You can change the version of Anaconda through the variable `VERSION_NUM` in the file. After an install, you may need to call `source .\bashrc` for your `bash` profile to be updated.
 
