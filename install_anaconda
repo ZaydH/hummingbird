@@ -2,8 +2,8 @@
 # Go to home directory
 cd ~
 
-ANACONDA_VERSION=5.0.1
-PYTHON_VERSION=2.7.14
+ANACONDA_VERSION=5.2.0
+PYTHON_VERSION=${1}
 
 # You can change what anaconda version you want at 
 # https://repo.continuum.io/archive/
@@ -21,4 +21,4 @@ conda update conda
 conda create -n conda-$PYTHON_VERSION python=$PYTHON_VERSION anaconda -y
 # Install mpi4py
 conda install -n conda-$PYTHON_VERSION python=$PYTHON_VERSION mpi4py -y
-source active conda-$PYTHON_VERSION
+source activate conda-$PYTHON_VERSION
