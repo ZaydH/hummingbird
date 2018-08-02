@@ -1,6 +1,5 @@
 import logging
 import time
-
 import sys
 from mpi4py import MPI
 
@@ -22,6 +21,8 @@ class HummingbirdFramework(object):
     """
     log_level = logging.DEBUG
 
+    MASTER_RANK = 0
+
     # noinspection PyPep8Naming
     @staticmethod
     def run(TaskClass, WorkerClass):
@@ -37,16 +38,14 @@ class HummingbirdFramework(object):
                             passed task.
         :type WorkerClass: class
         """
-        # HummingbirdFramework._setup_logger()
+        HummingbirdFramework._setup_logger()
 
         # Rank selects whether the task is a master or slave.
         rank = MPI.COMM_WORLD.Get_rank()
         comm = MPI.COMM_WORLD
 
-        # noinspection PyPep8Naming
-        MASTER_RANK = 0
-        if rank == MASTER_RANK:
-            logging.info("***************** New Run Beginning ****************")
+        if rank == HummingbirdFramework.MASTER_RANK:
+            logging.info("************* HUMMINGBIRD MPI HOST CREATED *************")
             HummingbirdFramework._run_controller(comm, TaskClass)
         else:
             worker = WorkerClass(comm, rank)
@@ -74,10 +73,11 @@ class HummingbirdFramework(object):
                           workers.
         :type TaskClass: class
         """
-        log_txt = 'CONTROLLER: Starting {} workers'.format(comm.Get_size() - 1)
-        logging.info(log_txt)
         status = MPI.Status()
         controller = Controller(comm)
+
+        log_txt = 'CONTROLLER: Starting %d workers' % controller.n_workers
+        logging.info(log_txt)
         solver = TaskClass()
 
         all_messages_sent = False
@@ -87,7 +87,7 @@ class HummingbirdFramework(object):
             while HummingbirdFramework._is_message_pending(comm):
                 worker_result = comm.recv(status=status)
                 controller.add_available_worker(status.Get_source())
-                solver.process_results(worker_result)
+                solver.process_results(status.Get_source(), worker_result)
 
             # If all tasks are done, do not exit until
             if all_messages_sent:
@@ -111,7 +111,7 @@ class HummingbirdFramework(object):
                     logging.info("CONTROLLER: Packing task \"%s\" for worker %d"
                                  % (task, worker))
                     message = ControllerToWorkerMessage.build(False, task)
-                    comm.isend(message, dest=worker)
+                    comm.send(message, dest=worker)
                     time.sleep(1)
 
     @staticmethod
@@ -122,9 +122,10 @@ class HummingbirdFramework(object):
         Configures the framework's logger.
         """
         # noinspection PyProtectedMember
-        num_existing_handlers = len(logging._handlers)
+        logger = logging.getLogger()
+        num_existing_handlers = len(logger.handlers)
         if num_existing_handlers > 0:
-            logging.info("%d handlers already exist. No loggers to be added"
+            logging.info("%d handlers already exist. Not adding any loggers."
                          % num_existing_handlers)
             return
 

@@ -6,6 +6,7 @@ import abc
 import sys
 import socket
 
+from mpi.hb_framework import HummingbirdFramework
 from mpi.message import ControllerToWorkerMessage
 
 
@@ -30,18 +31,19 @@ class AbstractWorker:
             msg = self.comm.recv()
 
             if ControllerToWorkerMessage.extract_should_exit(msg):
-                txt = 'Worker Rank \#{}: Exiting by request!'.format(self.rank)
+                txt = 'Worker Rank #{}: Exiting by request!'.format(self.rank)
                 logging.info(txt)
                 sys.exit(0)
 
-            log_txt = ('Worker Rank \#%d (%s): Executing task'
+            log_txt = ('Worker Rank #%d (%s): Executing task'
                        % (self.rank, socket.gethostname()))
             logging.info(log_txt)
 
             task = ControllerToWorkerMessage.extract_generated_task(msg)
             results = self.execute_task(task)
-            # Requires "results" be pickable
-            self.comm.send(results, dest=0)
+
+            # Requires "results" be pickleable
+            self.comm.send(results, dest=HummingbirdFramework.MASTER_RANK)
 
     @abc.abstractmethod
     def execute_task(self, msg):
@@ -74,7 +76,7 @@ class AbstractTask:
     def get_next(self):
         """
         Extracts and returns the next task a worker will perform.  Note that the
-        task must be PICKABLE.
+        task must be PICKLEABLE.
 
         :return: Next task to be performed by a worker.
         """
@@ -89,10 +91,12 @@ class AbstractTask:
         pass
 
     @abc.abstractmethod
-    def process_results(self, results):
+    def process_results(self, worker_id, results):
         """
         Process the results from a worker.
 
+        :param worker_id: Identification number (rank) of the worker who generated the results
+        :type worker_id: int
         :param results: Results from the worker
         :type results: dict
         """

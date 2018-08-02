@@ -4,10 +4,18 @@ from mpi.message import ControllerToWorkerMessage
 
 
 class Controller(object):
+    """
+    Master node that owns the workers
+    """
+    FIRST_WORKER_RANK = 1
+
     def __init__(self, comm):
         self.comm = comm
         self.n_workers = comm.Get_size() - 1
-        self.available_workers = set(range(1, self.n_workers + 1))
+
+        self.all_workers = list(range(Controller.FIRST_WORKER_RANK,
+                                      self.n_workers + Controller.FIRST_WORKER_RANK))
+        self.available_workers = set(self.all_workers)
 
     def have_available_workers_p(self):
         """
@@ -21,7 +29,11 @@ class Controller(object):
     def add_available_worker(self, w):
         """
         Adds a worker to management by the master.
+
+        :param w: ID of the worker to add
+        :type w: int
         """
+        assert w not in self.available_workers
         self.available_workers.add(w)
 
     def terminate_everything(self):
@@ -29,7 +41,7 @@ class Controller(object):
         All tasks are completed so the master kills all workers then exits
         completely.
         """
-        self.terminate_workers(list(range(1, self.n_workers + 1)))
+        self.terminate_workers(self.all_workers)
         txt = "CONTROLLER: Finished Successfully. Waiting" + \
               " on any unfinished workers..."
         logging.info(txt)
@@ -53,6 +65,8 @@ class Controller(object):
         :return: Index of the next worker that will perform a specified task.
         """
         # available_workers MUST BE NOT EMPTY
+        assert self.have_available_workers_p()
+
         return self.available_workers.pop()
 
     def all_workers_completed(self):
